@@ -1,4 +1,5 @@
 from app.server import app
+from flask_sqlalchemy import SQLAlchemy
 import os
 
 production = os.environ.get("PRODUCTION", False)
