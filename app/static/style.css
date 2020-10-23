@@ -1,7 +1,9 @@
 .alert{
     width: 95%;
+    border-radius: 16px;
 }
 
 #info{
     width: 95%;
+    border-radius: 16px;
 }
