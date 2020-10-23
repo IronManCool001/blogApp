@@ -51,8 +51,8 @@
             {% endif %}
     
     <p>{{ post.content }}</p>
-    <a href='/posts/delete/{{post.id}}'>Delete</a>
-    <a href='/posts/edit/{{post.id}}'>Edit</a>
+    <a href='/posts/delete/{{post.id}}' class="btn btn-danger">Delete</a>
+    <a href='/posts/edit/{{post.id}}' class="btn btn-primary">Edit</a>
     <hr>
 {% endfor%}
           </div>
