@@ -41,7 +41,7 @@
                 <span aria-hidden="true" id="close">x</span>
             </button>
           </div>
-          <div id="posts">
+          <div id="posts" class="container-fluid">
             {% for post in posts %}
             <h2>{{ post.title }}</h2>
             {% if post.author %}
@@ -49,11 +49,11 @@
             {% else %}
             <h3>By: Anonmyous</h3>
             {% endif %}
-    
-    <p>{{ post.content }}</p>
-    <a href='/posts/delete/{{post.id}}' class="btn btn-danger">Delete</a>
-    <a href='/posts/edit/{{post.id}}' class="btn btn-primary">Edit</a>
-    <hr>
+            
+            <p>{{ post.content }}</p>
+            <a href='/posts/delete/{{post.id}}' class="btn btn-danger">Delete</a>
+            <a href='/posts/edit/{{post.id}}' class="btn btn-primary">Edit</a>
+            <hr>
 {% endfor%}
           </div>
     </center>
