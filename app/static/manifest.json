@@ -1,0 +1,16 @@
+{
+    "name": "TFBLOG",
+    "description": "The Official Blog Website of Technical Friend",
+    "short_name": "TFBLOG",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#2196f3",
+    "background_color": "#000000",
+    "orientation": "potrait-primary",
+    "icons":[
+        {
+            "src": "/static/favicon.ico",
+            "type": "image/ico"
+        }
+    ]
+}
