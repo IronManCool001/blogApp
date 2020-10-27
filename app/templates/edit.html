@@ -2,61 +2,52 @@
 {% block head %}
 <title>Edit Post</title> 
 <link rel="icon" href="./static/favicon.ico">
-<!-- UIkit CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/css/uikit.min.css" />
-
-<!-- UIkit JS -->
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit-icons.min.js"></script>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-    <!-- jQuery and JS bundle w/ Popper.js -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-{% endblock %}
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit-icons.min.js"></script>
+{% endblock head%}
 
 {% block body %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">Blog</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarText">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/createPost">New Post</a>
-        </li>
+<nav class="uk-navbar-container uk-margin" uk-navbar>
+  <a class="uk-navbar-item uk-logo" href="/">Blog</a>
+    <ul class="uk-navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/createPost">New Post</a>
+      </li>
         <li class="nav-item">
           <a class="nav-link" href="/about">About</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+          </li>
+      </li>
+    </ul>
+  </div>
+</nav>
 <center>
-<div class="container-fluid">
+<div class="uk-container">
     <hr>
     <h2>Edit:</h2>
     <form action='/posts/edit/{{post.id}}' method='POST'>
-        <label for="title">Title</label>
+        <label for="title">Title</label> 
+        <br/>
+        <input type='text' name='title' id='title' class="uk-input uk-form-width-large" id="exampleInputEmail1" aria-describedby="emailHelp" width="50%" style="border-radius:16px">
+        <br/>
+        <label for="content">Post</label>
         <br>
-        <input type='text' name='title' id='title' value="{{post.title}}">
-        <br>
-        <label for="post">Post</label>
-        <br> 
-        <input type='text' name='content' id='content' value="{{post.content}}" class="uk-textarea uk-form-default uk-form-width-large" rows="5"">
-        <br>
+         <textarea type='text' name='content' id='content' class="uk-textarea uk-form-width-large" id="exampleFormControlTextarea1" rows="5" width="50%" style="border-radius:16px"></textarea>
+        <br/>
         <label for="author">Author</label>
+        <br/>
+        <div class="uk-inline">
+        <span class="uk-form-icon" uk-icon="icon: user"></span><input width="50%" style="border-radius:16px" type='text' name='author' id='author' class="uk-input uk-form-width-large" id="usr">
+        </div>
+        <br/>
         <br>
-        <input type='text' name='author' id='author' value="{{post.author}}">
-        <br>
-        <br>
-        <input type='submit' value='Save' class="btn btn-primary">
-    </form>
+    <input type='submit' value="Submit" class="uk-button-secondary uk-width-1-4  uk-button-large" style="border-radius: 12px;;">
+  </form>
     <hr>
     </div>
     </center>
