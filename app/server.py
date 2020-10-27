@@ -5,6 +5,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
 db = SQLAlchemy(app)
+db.create_all()
 
 class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
