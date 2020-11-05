@@ -40,7 +40,10 @@ def createPost():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    name = request.cookies.get('name')
+    email = request.cookies.get('Email')
+    imageURL= request.cookies.get('imageURL')
+    return render_template('dashboard.html',name=name,email=email,imgurl=imageURL)
 @app.route('/posts', methods=['POST','GET'])
 def post():
     if request.method == 'POST':
