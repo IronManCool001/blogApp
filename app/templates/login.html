@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+      Login
+    </title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/css/uikit.min.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit-icons.min.js"></script>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="198600332636-acdbbn1igrv7uttfn1o54pru57aeo46f.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  </head>
+  <body>
+    <nav class="uk-navbar-container uk-margin" uk-navbar>
+        <a class="uk-navbar-item uk-logo" href="/">Blog</a>
+          <ul class="uk-navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/createPost">New Post</a>
+            </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="#">Login</a> 
+                </li>
+                {% if logged%}
+                <li>
+                  <a href="/login" onclick="signOut();">Sign out</a>
+                </li>
+                {% endif %}
+            </li>
+          </ul>
+        </div>
+      </nav>
+    <center>
+        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <script>
+          function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            const name=profile.getName();
+            document.cookie="name="+name
+            console.log('Image URL: ' + profile.getImageUrl());
+            const imageurl = profile.getImageUrl();
+            document.cookie="imageURL="+imageurl
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            const email = profile.getEmail();
+            document.cookie="Email="+email;
+            document.cookie="logged="+true
+          }
+        </script>
+        <script>
+          function signOut() {
+              var auth2 = gapi.auth2.getAuthInstance();
+              auth2.signOut().then(function () {
+                console.log('User signed out.');
+                document.cookie="name=null"
+                document.cookie="Email=null";
+                document.cookie="imageURL=null"
+                document.cookie="logged="+false
+      });
+          }
+          </script>
+    </center>
+  </body>
+</html>

@@ -18,24 +18,44 @@ class BlogPost(db.Model):
 X = ['Hello','Bye']
 @app.route('/')
 def home():
+    name = request.cookies.get('name')
     all_posts = BlogPost.query.order_by(BlogPost.date_posted).all()
-    return render_template('index.html', len=len(X), posts = all_posts)
-
+    logged=request.cookies.get('logged')
+    return render_template('index.html', len=len(X), posts = all_posts, name=name)
+@app.route('/login')
+def login():
+    logged=request.cookies.get('logged')
+    if logged == "true":
+        return render_template('login.html', logged=True)
+    else:
+        return render_template('login.html', logged=False)
 @app.route('/createPost')
 def createPost():
-    return render_template('posts.html')
+    name = request.cookies.get('name')
+    if name == "null":
+        null = True
+        return render_template('posts.html', null=null)
+    else:
+        return render_template('posts.html')
 
-
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 @app.route('/posts', methods=['POST','GET'])
 def post():
     if request.method == 'POST':
         post_title = request.form['title']
         post_content = request.form['content']
         post_author = request.form['author']
-        new_post = BlogPost(title=post_title, content=post_content, author=post_author)
-        db.session.add(new_post)
-        db.session.commit()
-        return redirect('/')
+        name = request.cookies.get('name')
+        if post_author != name:
+            error = True
+            return render_template('posts.html',error=True)
+        else:
+            new_post = BlogPost(title=post_title, content=post_content, author=post_author)
+            db.session.add(new_post)
+            db.session.commit()
+            return redirect('/')
     else:
         return redirect('/')
 

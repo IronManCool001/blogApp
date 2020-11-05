@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/css/uikit.min.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.9/dist/js/uikit-icons.min.js"></script>
+</head>
+<body>
+    <nav class="uk-navbar-container uk-margin uk-navbar" uk-navbar="">
+        <ul class="uk-navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/createPost">New Post</a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+              </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Dashboard</a>
+              </li>
+        </ul>
+    </nav>
+    <center>
+    {% if error %}
+    <div class="uk-alert-primary" uk-alert style="width: 95%; border-radius: 12px;">
+      <a class="uk-alert-close" uk-close></a>
+      <p>Eror Login To See your Credentials</p>
+  </div>
+  {% else %}
+  <label for="name">Name</label>
+  <h2 id="name">{{name}}</h2>
+  <label for="first_name">Email</label>
+  <h2 id="email">{{gmail}}</h2>
+  <label for="image">Image</label>
+  <br><br>
+  <img src={{imgurl}} id="img" alt="Image should be here if you are logged in">
+  <h2>{{name}}</h2>
+    {% endif %}
+    </center>
+    <script>
+        //const Name = localStorage.getItem('Name');
+        //document.getElementById('name').innerHTML=Name;
+        //const Email = localStorage.getItem('Email');
+        //document.getElementById('email').innerHTML=Email;
+        //const imageURL = localStorage.getItem('ImageURL');
+        //img = document.getElementById('img');
+        //img.src=imageURL;
+    </script>
+</body>
+</html>

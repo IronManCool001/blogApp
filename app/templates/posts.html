@@ -25,10 +25,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                 </li>
+                <li class="nav-item">
+                    <a href="/login" class="#">Login</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
               </ul>
             </nav>
             <br>
             <br>
+            {% if error %}
+            <div class="uk-alert-danger" uk-alert style="width:95%;border-radius: 16px;">
+                <a class="uk-alert-close" uk-close></a>
+                <h3>Notice</h3>
+                <p>Username must match author.</p>
+            </div>
+            {% endif %}
+            {% if not(null) %}
             <form action="/posts" method="POST">
                 <label for="title"><h3>Title</h3></label>
                 <input class="uk-input uk-width-1-4" style="border-radius: 14px;"name="title" id="title">
@@ -44,6 +58,13 @@
                 <br><br>
                 <input type="submit" value="submit" class="uk-button">
             </form>
+            {% else %}
+            <div class="uk-alert-danger" uk-alert style="width:95%;border-radius: 16px;">
+                <a class="uk-alert-close" uk-close></a>
+                <h3>Notice</h3>
+                <p>Error you must be logged in</p>
+            </div>
+            {% endif %}
     </center>
 </body>
 </html>

@@ -27,7 +27,12 @@
                   <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                     </li>
-                </li>
+                    <li class="nav-item">
+                      <a href="/login" class="nav-link">Login</a> 
+                  </li>
+                  <li class="nav-item">
+                    <a href="/dashboard" class="nav-link">Dashboard</a>
+                  </li>
               </ul>
             </div>
           </nav>
@@ -46,8 +51,10 @@
             {% endif %}
             
             <p>{{ post.content }}</p>
+            {% if name == post.author %}
             <a href='/posts/delete/{{post.id}}' class="uk-button-secondary uk-width-1-4  uk-button-large" style="border-radius: 12px;">Delete</a>
             <a href='/posts/edit/{{post.id}}' class="uk-button-primary uk-width-1-4  uk-button-large" style="border-radius: 12px;">Edit</a>
+            {% endif %}
             <hr>
 {% endfor%}
           </div>
