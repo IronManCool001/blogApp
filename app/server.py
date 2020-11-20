@@ -1,10 +1,21 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask,request,redirect,render_template,make_response
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    password = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(25), nullable=False)
+    name = db.Column(db.String(20), nullable=False, default='Anonmyous')
+
+    def __repr__(self):
+        return 'User ' + str(self.id)
 
 class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,76 +26,120 @@ class BlogPost(db.Model):
 
     def __repr__(self):
         return 'Blog post ' + str(self.id)
-X = ['Hello','Bye']
+
 @app.route('/')
 def home():
     name = request.cookies.get('name')
     all_posts = BlogPost.query.order_by(BlogPost.date_posted).all()
-    logged=request.cookies.get('logged')
-    return render_template('index.html', len=len(X), posts = all_posts, name=name)
+    logged = bool(name)
+    return render_template('index.html', posts = all_posts, name=name,logged=logged)
 @app.route('/login')
 def login():
-    logged=request.cookies.get('logged')
-    if logged == "true":
-        return render_template('login.html', logged=True)
-    else:
-        return render_template('login.html', logged=False)
-@app.route('/createPost')
-def createPost():
-    name = request.cookies.get('name')
-    if name == "null":
-        null = True
-        return render_template('posts.html', null=null)
-    else:
-        return render_template('posts.html')
+    return render_template('login.html',pserror=False,nerror=False )
+
+@app.route('/register')
+def signup():
+    return render_template('signup.html',error=False)
 
 @app.route('/dashboard')
 def dashboard():
     name = request.cookies.get('name')
-    email = request.cookies.get('Email')
-    imageURL= request.cookies.get('imageURL')
-    return render_template('dashboard.html',name=name,email=email,imgurl=imageURL)
-@app.route('/posts', methods=['POST','GET'])
+    logged = bool(name)
+    user = User.query.filter_by(name=name).first()
+    email = user.email
+    return render_template('dashboard.html',logged=logged,name=name,email=email)
+
+@app.route('/createpost')
+def createPost():
+    name = request.cookies.get('name')
+    if (bool(name) == False):
+        null = True
+        logged = False
+        return render_template('posts.html', null=null,logged=logged)
+    else:
+        logged = True
+        return render_template('posts.html',logged=logged)
+@app.route('/about')
+def about():
+    name = request.cookies.get('name')
+    logged = bool(name)
+    return render_template('about.html',logged=logged)
+
+@app.route('/post/delete/<int:id>')
+def delete(id):
+    post = BlogPost.query.get_or_404(id)
+    name = request.cookies.get('name')
+    if name == post.author:    
+        db.session.delete(post)
+        db.session.commit()
+        return redirect('/')
+    else:
+        return redirect('/')
+
+@app.route('/post/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+
+    post = BlogPost.query.get_or_404(id)
+
+    if request.method == 'POST':
+        name = request.cookies.get('name')
+        post.title = request.form['title']
+        post.author = name
+        post.content = request.form['content']
+        if post.author == name:
+            db.session.commit()
+            return redirect('/post')
+        else:
+            return redirect('/')
+    else:
+        return render_template('edit.html', post=post)
+
+@app.route('/post', methods=['POST','GET'])
 def post():
     if request.method == 'POST':
         post_title = request.form['title']
         post_content = request.form['content']
-        post_author = request.form['author']
         name = request.cookies.get('name')
-        if post_author != name:
-            error = True
-            return render_template('posts.html',error=True)
-        else:
-            new_post = BlogPost(title=post_title, content=post_content, author=post_author)
-            db.session.add(new_post)
-            db.session.commit()
-            return redirect('/')
+        new_post = BlogPost(title=post_title, content=post_content, author=name)
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect('/')
     else:
         return redirect('/')
 
-@app.route('/posts/delete/<int:id>')
-def delete(id):
-    post = BlogPost.query.get_or_404(id)
-    db.session.delete(post)
-    db.session.commit()
-    return redirect('/posts')
-
-@app.route('/posts/edit/<int:id>', methods=['GET', 'POST'])
-def edit(id):
-    
-    post = BlogPost.query.get_or_404(id)
-
+@app.route('/checkaccount',methods=['POST','GET'])
+def checkaccount():
     if request.method == 'POST':
-        post.title = request.form['title']
-        post.author = request.form['author']
-        post.content = request.form['content']
-        db.session.commit()
-        return redirect('/posts')
-    else:
-        return render_template('edit.html', post=post)
+        name = request.form['name']
+        password = request.form['password']
+        user = User.query.filter_by(name=name).first()
+        if bool(user):
+            if (user.name == name):
+                if (user.password == password):
+                    response = make_response( redirect('/') )
+                    response.set_cookie( "name", name)
+                    return response
+                if (user.password != password):
+                    return render_template('login.html',pserror=True)
+            else:
+                return render_template('login.html',nerror = True)
+        else:
+            return redirect('/register')
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
+@app.route('/newaccount',methods=['POST','GET'])
+def newaccount():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        existingname = User.query.filter_by(name=name).first()
+        if (bool(existingname)):
+            return render_template('signup.html',error=True)
+        else:
+            newaccount = User(name=name, email=email, password=password)
+            db.session.add(newaccount)
+            db.session.commit()
+            return redirect('/login')
+
 if __name__ == "__main__":
     app.run(debug=True)
