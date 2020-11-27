@@ -1,9 +1,8 @@
 from flask import Flask,request,redirect,render_template,make_response
 from flask_sqlalchemy import SQLAlchemy
-import datetime
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
@@ -35,19 +34,32 @@ def home():
     return render_template('index.html', posts = all_posts, name=name,logged=logged)
 @app.route('/login')
 def login():
-    return render_template('login.html',pserror=False,nerror=False )
+    name = request.cookies.get('name')
+    logged = bool(name)
+    if logged:
+        return redirect('/')
+    else:
+        return render_template('login.html',pserror=False,nerror=False,logged=logged)
 
 @app.route('/register')
 def signup():
-    return render_template('signup.html',error=False)
+    name = request.cookies.get('name')
+    logged = bool(name)
+    if logged:
+        return redirect('/')
+    else:
+        return render_template('signup.html',error=False,logged=logged)
 
 @app.route('/dashboard')
 def dashboard():
     name = request.cookies.get('name')
     logged = bool(name)
-    user = User.query.filter_by(name=name).first()
-    email = user.email
-    return render_template('dashboard.html',logged=logged,name=name,email=email)
+    if logged:
+        user = User.query.filter_by(name=name).first()
+        email = user.email
+        return render_template('dashboard.html',logged=logged,name=name,email=email)
+    else:
+        return render_template('dashboard.html',logged=False)
 
 @app.route('/createpost')
 def createPost():
@@ -69,7 +81,7 @@ def about():
 def delete(id):
     post = BlogPost.query.get_or_404(id)
     name = request.cookies.get('name')
-    if name == post.author:    
+    if name == post.author:
         db.session.delete(post)
         db.session.commit()
         return redirect('/')
@@ -84,12 +96,13 @@ def edit(id):
     if request.method == 'POST':
         name = request.cookies.get('name')
         post.title = request.form['title']
-        post.author = name
+        #post.author = name
         post.content = request.form['content']
         if post.author == name:
+            post.author = name
             db.session.commit()
             return redirect('/post')
-        else:
+        elif(post.author != name):
             return redirect('/')
     else:
         return render_template('edit.html', post=post)
@@ -116,9 +129,12 @@ def checkaccount():
         if bool(user):
             if (user.name == name):
                 if (user.password == password):
-                    response = make_response( redirect('/') )
-                    response.set_cookie( "name", name)
-                    return response
+                    if (bool(name) == True):
+                        response = make_response( redirect('/') )
+                        response.set_cookie( "name", name)
+                        return response
+                    else:
+                        return redirect('/login')
                 if (user.password != password):
                     return render_template('login.html',pserror=True)
             else:
@@ -136,10 +152,13 @@ def newaccount():
         if (bool(existingname)):
             return render_template('signup.html',error=True)
         else:
-            newaccount = User(name=name, email=email, password=password)
-            db.session.add(newaccount)
-            db.session.commit()
-            return redirect('/login')
+            if (bool(name) == True):
+                newaccount = User(name=name, email=email, password=password)
+                db.session.add(newaccount)
+                db.session.commit()
+                return redirect('/login')
+            else:
+                return redirect('/register')
 
 if __name__ == "__main__":
     app.run(debug=True)
